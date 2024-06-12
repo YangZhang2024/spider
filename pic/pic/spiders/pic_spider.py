@@ -2,6 +2,7 @@ import scrapy
 import requests
 import os
 from pymongo import MongoClient
+import base64
 
 from ..constants import domain, picture_host
 from ..utils import *
@@ -22,7 +23,8 @@ class PicSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse_pic_category_page)
 
     def parse_pic_category_page(self, response):
-        categories = {'同性美图', '美腿丝袜'}
+
+        categories = {base64.b64decode('5ZCM5oCn576O5Zu+').decode(), base64.b64decode('576O6IW/5Lid6KKc').decode()}
 
         for category_selector in response.css('div.category-list a'):
             title = aes_cbc_pk5_padding_dec(category_selector.css('a::attr(title)').get())
