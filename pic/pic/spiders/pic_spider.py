@@ -1,15 +1,13 @@
+import logging
+
 import scrapy
 import requests
 import os
-from pymongo import MongoClient
 import base64
 
 from ..constants import domain, picture_host
-from ..utils import aes_cbc_pk5_padding_dec
+from ..utils import aes_cbc_pk5_padding_dec, scrtv
 from ..items import PicItem
-
-client = MongoClient("localhost", 27017)
-scrtv = client.pic['4scrtv']
 
 
 class PicSpider(scrapy.Spider):
@@ -38,8 +36,8 @@ class PicSpider(scrapy.Spider):
             pic_set_name = aes_cbc_pk5_padding_dec(pic_set_selector.css('div:nth-child(2)::attr(title)').get())
 
             if scrtv.find_one({"pic_set_name": pic_set_name}):
+                logging.info(f'{pic_set_name} has been saved ignore it')
                 continue
-            print('pic set name', pic_set_name)
             date = pic_set_selector.css('div.video-item-date::text').get()
             meta = {
                 'name': pic_set_name,
@@ -61,4 +59,5 @@ class PicSpider(scrapy.Spider):
         for file_path in paths:
             file_names.append(os.path.basename(file_path))
             b64_contents.append(requests.get(picture_host + file_path).text)
+        self.logger.info("get pic set %s" % pic_set_name)
         yield PicItem(pic_set_name=pic_set_name, file_names=file_names, b64_contents=b64_contents)

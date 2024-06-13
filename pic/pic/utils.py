@@ -2,6 +2,8 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 import base64
 import os
+from pymongo import MongoClient
+import logging
 
 
 # data URI scheme
@@ -30,10 +32,10 @@ def save_pictures(directory, pic_set_name, file_names, b64_contents):
 
     for i in range(len(file_names)):
         try:
-            file_path = os.path.normpath(os.path.join(d, pic_set_name, file_names[i]))
+            file_path = os.path.normpath(os.path.join(directory, file_names[i]))
             b64_to_pic(b64_contents[i], file_path)
         except Exception as e:
-            print(e)
+            logging.error(f'save pic error {pic_set_name}', e)
 
 
 key = b'IdTJq0HklpuI6mu8iB%OO@!vd^4K&uXW'
@@ -44,6 +46,9 @@ def aes_cbc_pk5_padding_dec(b64_data: str):
     aes = AES.new(key, mode=AES.MODE_CBC, IV=iv)
     data = base64.b64decode(b64_data)
     return unpad(aes.decrypt(data), 16).decode(encoding='utf-8')
+
+client = MongoClient("localhost", 27017)
+scrtv = client.pic['4scrtv']
 
 
 if __name__ == '__main__':

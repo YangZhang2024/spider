@@ -9,11 +9,11 @@ scrtv = client.pic['4scrtv']
 # print(r)
 
 import os
-dirs = os.listdir('E:\\data\\pictures')
-for d in dirs:
-    record = {
-        "pic_set_name": d
-    }
-    scrtv.insert_one(record)
+# dirs = os.listdir('E:\\data\\pictures')
+# for d in dirs:
+#     record = {
+#         "pic_set_name": d
+#     }
+#     scrtv.insert_one(record)
 
 

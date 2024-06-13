@@ -2,11 +2,11 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-
+import logging
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
-from .utils import save_pictures
+from .utils import save_pictures, scrtv
 import os
 from .constants import pic_dir
 
@@ -29,4 +29,6 @@ class PicPipeline:
 
         directory = os.path.normpath(os.path.join(pic_dir, pic_set_name))
         save_pictures(directory, pic_set_name, file_names, b64_contents)
+        scrtv.insert_one({'pic_set_name': pic_set_name})
+        logging.info(f"process item {pic_set_name}")
         return item
