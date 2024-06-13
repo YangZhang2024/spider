@@ -9,6 +9,6 @@ import scrapy
 class PicItem(scrapy.Item):
     # define the fields for your item here like:
     pic_set_name = scrapy.Field()
-    file_name = scrapy.Field()
-    b64_content = scrapy.Field()
+    file_names = scrapy.Field()
+    b64_contents = scrapy.Field()
     pass

@@ -5,11 +5,10 @@ from pymongo import MongoClient
 import base64
 
 from ..constants import domain, picture_host
-from ..utils import *
+from ..utils import aes_cbc_pk5_padding_dec
 from ..items import PicItem
 
 client = MongoClient("localhost", 27017)
-db = client.pic
 scrtv = client.pic['4scrtv']
 
 
@@ -49,14 +48,17 @@ class PicSpider(scrapy.Spider):
             yield response.follow(href, callback=self.parse_pic_set_page, meta=meta)
         # next page
         next_page = response.css('div.pagination a[title="下一页"]::attr(href)').get()
-        if not "javascript:;" == next_page:
+        if next_page and not "javascript:;" == next_page:
             yield response.follow(next_page, callback=self.parse_sub_category_page)
 
     def parse_pic_set_page(self, response):
         pic_set_name = response.meta['name']
         date = response.meta['date']
         paths = response.xpath('//div[@class="tupian-detail-content"]/img/@data-pic-base64').getall()
+        file_names = []
+        b64_contents = []
+
         for file_path in paths:
-            file_name = os.path.basename(file_path)
-            text = requests.get(picture_host + file_path).text
-            yield PicItem(pic_set_name=pic_set_name, file_name=file_name, b64_content=text)
+            file_names.append(os.path.basename(file_path))
+            b64_contents.append(requests.get(picture_host + file_path).text)
+        yield PicItem(pic_set_name=pic_set_name, file_names=file_names, b64_contents=b64_contents)

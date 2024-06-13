@@ -6,7 +6,7 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-from .constants import domain
+from .constants import domain, cookie
 
 BOT_NAME = "pic"
 
@@ -43,10 +43,10 @@ DEFAULT_REQUEST_HEADERS = {
     "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
     "Cache-Control": "no-cache",
     "Connection": "keep-alive",
-    "Cookie": "Hm_lvt_7206a066cf484c4955f6676a47e50dbb=1718111945,1718113613; Hm_lpvt_7206a066cf484c4955f6676a47e50dbb=1718119223",
+    "Cookie": cookie,
     "Host": domain,
     "Pragma": "no-cache",
-    # "Referer": "https://www.z8f2k.com/cYcL3R1cGlhbi8zNTgyMDcuaHRtbA%3D%3D.html",
+    "Referer": f"https://{domain}",
     "Sec-Fetch-Dest": "document",
     "Sec-Fetch-Mode": "navigate",
     "Sec-Fetch-Site": "same-origin",
@@ -79,7 +79,7 @@ DEFAULT_REQUEST_HEADERS = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   "pic.pipelines.PicPipeline": 300,
+    "pic.pipelines.PicPipeline": 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

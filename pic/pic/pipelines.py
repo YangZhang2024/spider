@@ -6,8 +6,9 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
-from .utils import b64_to_pic
+from .utils import save_pictures
 import os
+from .constants import pic_dir
 
 
 class PicPipeline:
@@ -23,12 +24,9 @@ class PicPipeline:
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
         pic_set_name = adapter.get('pic_set_name')
-        file_name = adapter.get('file_name')
-        d = 'E:\\data\\pictures\\' + pic_set_name + '\\'
+        file_names = adapter.get('file_names')
+        b64_contents = adapter.get('b64_contents')
 
-        folder = os.path.exists(d)
-        if not folder:
-            os.mkdir(d)
-
-        b64_to_pic(adapter.get('b64_content'), d, file_name)
+        directory = os.path.normpath(os.path.join(pic_dir, pic_set_name))
+        save_pictures(directory, pic_set_name, file_names, b64_contents)
         return item
