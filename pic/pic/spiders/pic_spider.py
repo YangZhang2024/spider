@@ -27,9 +27,13 @@ class PicSpider(scrapy.Spider):
             title = aes_cbc_pk5_padding_dec(category_selector.css('a::attr(title)').get())
             if title in categories:
                 link = aes_cbc_pk5_padding_dec(category_selector.css('a::attr(data-link)').get())
-                yield response.follow(url=link, callback=self.parse_sub_category_page)
+                yield response.follow(url=link, callback=self.parse_sub_category_page, meta={'category': title})
 
     def parse_sub_category_page(self, response):
+        current_category = response.meta['category']
+        current_page = response.css('div.pagination strong::text').get()
+        logging.info(f"{current_category} page {current_page}")
+
         pic_sets = response.css('div.video-list a')
         for pic_set_selector in pic_sets:
             href = pic_set_selector.css('a::attr(href)').get()
@@ -47,7 +51,7 @@ class PicSpider(scrapy.Spider):
         # next page
         next_page = response.css('div.pagination a[title="下一页"]::attr(href)').get()
         if next_page and not "javascript:;" == next_page:
-            yield response.follow(next_page, callback=self.parse_sub_category_page)
+            yield response.follow(next_page, callback=self.parse_sub_category_page, meta={'category': current_category})
 
     def parse_pic_set_page(self, response):
         pic_set_name = response.meta['name']
