@@ -28,7 +28,8 @@ class PicPipeline:
         b64_contents = adapter.get('b64_contents')
 
         directory = os.path.normpath(os.path.join(pic_dir, pic_set_name))
+        logging.info(f"@@@@@@@@@start to download {pic_set_name}")
         save_pictures(directory, pic_set_name, file_names, b64_contents)
+        logging.info(f"@@@@@@@@@end to download {pic_set_name}")
         scrtv.insert_one({'pic_set_name': pic_set_name})
-        logging.info(f"process item {pic_set_name}")
         return item
