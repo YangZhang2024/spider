@@ -17,11 +17,11 @@ class PicSpider(scrapy.Spider):
         host = f'https://{domain}'
         urls = [host + "/cYcL3R1cGlhbi9saXN0Lmh0bWw%3D.html"]
         for url in urls:
-            self.logger.info(f"========schedule request for {url}")
+            self.logger.info(f"========{url} schedule request")
             yield scrapy.Request(url=url, callback=self.parse_pic_category_page)
 
     def parse_pic_category_page(self, response):
-        self.logger.info(f"========parse_pic_category_page {response.url}")
+        self.logger.info(f"========{response.url}  parse_pic_category_page")
 
         categories = {base64.b64decode('5ZCM5oCn576O5Zu+').decode(), base64.b64decode('576O6IW/5Lid6KKc').decode()}
 
